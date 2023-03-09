@@ -1,8 +1,12 @@
 #include <ros/ros.h>
 #include <std_msgs/String.h>
 #include "bspline_opt/bspline_optimizer.h"
+#include <ego_planner/Optimizedata.h>
 
-void Processing(const std_msgs::String::ConstPtr &msg)
+
+
+
+void Processing(const ego_planner::Optimizedata::ConstPtr &msg)
 {
 //   d 
 //   variable_num_ = 
@@ -20,12 +24,12 @@ int main(int argc, char **argv)
   
   ROS_INFO("lbfgs node is on");
 
-  ros::Publisher pub = nh.advertise<std_msgs::String>("result", 10);
+  ros::Publisher pub = nh.advertise<ego_planner::Optimizedata>("result", 10);
   ros::Subscriber sub = nh.subscribe("data", 10, Processing);
-  std_msgs::String msg;
+  ego_planner::Optimizedata msg;
   while (ros::ok())
   {
-    msg.data = "right";
+    // msg
     pub.publish(msg);
   }
 

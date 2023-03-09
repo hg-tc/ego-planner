@@ -1,5 +1,6 @@
 #include "bspline_opt/bspline_optimizer.h"
 #include "bspline_opt/gradient_descent_optimizer.h"
+#include <ego_planner/Optimizedata.h>
 // using namespace std;
 
 namespace ego_planner
@@ -901,7 +902,15 @@ namespace ego_planner
       /* ---------- optimize ---------- */
       t1 = ros::Time::now();
       // int result = lbfgs::LBFGS_ALREADY_MINIMIZED;
-      
+      ego_planner::Optimizedata Optimizedata;
+      Optimizedata.variable_num_ = variable_num_;
+      Optimizedata.qes.reserve(variable_num_);
+      for (int i = 0; i < variable_num_; ++i)
+      {
+        Optimizedata.qes.push_back(q[i]);
+      }
+      Optimizedata.final_cost = final_cost;
+      Optimizedata_pub_->publish(Optimizedata);
       int result = lbfgs::lbfgs_optimize(variable_num_, q, &final_cost, BsplineOptimizer::costFunctionRebound, NULL, BsplineOptimizer::earlyExit, this, &lbfgs_params);
       t2 = ros::Time::now();
       double time_ms = (t2 - t1).toSec() * 1000;
