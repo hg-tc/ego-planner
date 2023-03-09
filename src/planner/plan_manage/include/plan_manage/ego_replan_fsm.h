@@ -15,6 +15,7 @@
 #include <plan_env/grid_map.h>
 #include <ego_planner/Bspline.h>
 #include <ego_planner/DataDisp.h>
+#include <ego_planner/Optimizedata.h>
 #include <plan_manage/planner_manager.h>
 #include <traj_utils/planning_visualization.h>
 
@@ -76,7 +77,7 @@ namespace ego_planner
     ros::NodeHandle node_;
     ros::Timer exec_timer_, safety_timer_;
     ros::Subscriber waypoint_sub_, odom_sub_;
-    ros::Publisher replan_pub_, new_pub_, bspline_pub_, data_disp_pub_;
+    ros::Publisher replan_pub_, new_pub_, bspline_pub_, data_disp_pub_, Optimizedata_pub_;
 
     /* helper functions */
     bool callReboundReplan(bool flag_use_poly_init, bool flag_randomPolyTraj); // front-end and back-end method

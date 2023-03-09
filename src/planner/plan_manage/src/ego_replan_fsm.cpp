@@ -39,6 +39,7 @@ namespace ego_planner
     odom_sub_ = nh.subscribe("/odom_world", 1, &EGOReplanFSM::odometryCallback, this);
 
     bspline_pub_ = nh.advertise<ego_planner::Bspline>("/planning/bspline", 10);
+    Optimizedata_pub_ = nh.advertise<ego_planner::Optimizedata>("/planning/Optimizedata", 10);
     data_disp_pub_ = nh.advertise<ego_planner::DataDisp>("/planning/data_display", 100);
 
     if (target_type_ == TARGET_TYPE::MANUAL_TARGET)
@@ -423,7 +424,7 @@ namespace ego_planner
     getLocalTarget();
 
     bool plan_success =
-        planner_manager_->reboundReplan(start_pt_, start_vel_, start_acc_, local_target_pt_, local_target_vel_, (have_new_target_ || flag_use_poly_init), flag_randomPolyTraj, &bspline_pub_);
+        planner_manager_->reboundReplan(start_pt_, start_vel_, start_acc_, local_target_pt_, local_target_vel_, (have_new_target_ || flag_use_poly_init), flag_randomPolyTraj, &Optimizedata_pub_);
     have_new_target_ = false;
 
     cout << "final_plan_success=" << plan_success << endl;

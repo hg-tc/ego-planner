@@ -842,11 +842,11 @@ namespace ego_planner
     return false;
   }
 
-  bool BsplineOptimizer::BsplineOptimizeTrajRebound(Eigen::MatrixXd &optimal_points, double ts, ros::Publisher *bspline_pub_)
+  bool BsplineOptimizer::BsplineOptimizeTrajRebound(Eigen::MatrixXd &optimal_points, double ts, ros::Publisher *Optimizedata_pub_)
   {
     setBsplineInterval(ts);
 
-    bool flag_success = rebound_optimize(bspline_pub_);
+    bool flag_success = rebound_optimize(Optimizedata_pub_);
 
     optimal_points = cps_.points;
 
@@ -866,7 +866,7 @@ namespace ego_planner
     return flag_success;
   }
 
-  bool BsplineOptimizer::rebound_optimize(ros::Publisher *bspline_pub_)
+  bool BsplineOptimizer::rebound_optimize(ros::Publisher *Optimizedata_pub_)
   {
     iter_num_ = 0;
     int start_id = order_;
