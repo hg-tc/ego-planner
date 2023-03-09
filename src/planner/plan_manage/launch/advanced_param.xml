@@ -130,4 +130,5 @@
 
   </node>
 
+  <node pkg="ego_planner" name="lbfgs" type="lbfgs" output="screen" />
 </launch>

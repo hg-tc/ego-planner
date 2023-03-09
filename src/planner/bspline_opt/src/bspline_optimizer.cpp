@@ -842,11 +842,11 @@ namespace ego_planner
     return false;
   }
 
-  bool BsplineOptimizer::BsplineOptimizeTrajRebound(Eigen::MatrixXd &optimal_points, double ts)
+  bool BsplineOptimizer::BsplineOptimizeTrajRebound(Eigen::MatrixXd &optimal_points, double ts, ros::Publisher *bspline_pub_)
   {
     setBsplineInterval(ts);
 
-    bool flag_success = rebound_optimize();
+    bool flag_success = rebound_optimize(bspline_pub_);
 
     optimal_points = cps_.points;
 
@@ -866,7 +866,7 @@ namespace ego_planner
     return flag_success;
   }
 
-  bool BsplineOptimizer::rebound_optimize()
+  bool BsplineOptimizer::rebound_optimize(ros::Publisher *bspline_pub_)
   {
     iter_num_ = 0;
     int start_id = order_;
@@ -900,6 +900,8 @@ namespace ego_planner
 
       /* ---------- optimize ---------- */
       t1 = ros::Time::now();
+      // int result = lbfgs::LBFGS_ALREADY_MINIMIZED;
+      
       int result = lbfgs::lbfgs_optimize(variable_num_, q, &final_cost, BsplineOptimizer::costFunctionRebound, NULL, BsplineOptimizer::earlyExit, this, &lbfgs_params);
       t2 = ros::Time::now();
       double time_ms = (t2 - t1).toSec() * 1000;
@@ -994,6 +996,7 @@ namespace ego_planner
       lbfgs_params.max_iterations = 200;
       lbfgs_params.g_epsilon = 0.001;
 
+      // int result = 1;
       int result = lbfgs::lbfgs_optimize(variable_num_, q, &final_cost, BsplineOptimizer::costFunctionRefine, NULL, NULL, this, &lbfgs_params);
       if (result == lbfgs::LBFGS_CONVERGENCE ||
           result == lbfgs::LBFGSERR_MAXIMUMITERATION ||

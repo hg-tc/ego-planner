@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(ego_planner)
 
-set(CMAKE_BUILD_TYPE "Release")
+set(CMAKE_BUILD_TYPE Debug)
 ADD_COMPILE_OPTIONS(-std=c++11 )
 ADD_COMPILE_OPTIONS(-std=c++14 )
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -g")
@@ -27,6 +27,7 @@ add_message_files(
   FILES
   Bspline.msg
   DataDisp.msg
+  Optimizedata.msg
   )
   
 # Generate added messages and services with any dependencies listed here
@@ -67,4 +68,5 @@ add_executable(traj_server src/traj_server.cpp)
 target_link_libraries(traj_server ${catkin_LIBRARIES})
 add_dependencies(traj_server ${${PROJECT_NAME}_EXPORTED_TARGETS})
 
-
+add_executable(lbfgs src/lbfgs.cpp)
+target_link_libraries(lbfgs ${catkin_LIBRARIES})
