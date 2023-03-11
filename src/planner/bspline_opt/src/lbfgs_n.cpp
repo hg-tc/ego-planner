@@ -6,8 +6,15 @@
 
 void Process_callback(const ego_planner::Optimizedata::ConstPtr &msg)
 {
+    int variable_num_ = msg->variable_num_;
+    double q[variable_num_];
+    for (int i = 0; i < variable_num_; ++i)
+        {
+        q[i] = msg->qes[i];
+        }
+    double final_cost = msg->final_cost;
     ego_planner::MyOptimizer::Ptr myoptimizer;
-
+    myoptimizer->Processing(variable_num_, q, &final_cost);
 }
 
 int main(int argc, char **argv)

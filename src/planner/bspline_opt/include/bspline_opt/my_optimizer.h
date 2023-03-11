@@ -50,7 +50,7 @@ namespace ego_planner
     MyOptimizer() {}
     ~MyOptimizer() {}
 
-    void Processing(const ego_planner::Optimizedata::ConstPtr *msg);
+    void Processing(int variable_num_, double *q, double *final_cost);
 
   private:
 

@@ -5,15 +5,9 @@
 namespace ego_planner
 {
 
-void Processing(const ego_planner::Optimizedata::ConstPtr &msg)
+void MyOptimizer::Processing(int variable_num_, double *q, double *final_cost)
 {
-  int variable_num_ = msg->variable_num_;
-  double q[variable_num_];
-  for (int i = 0; i < variable_num_; ++i)
-    {
-      q[i] = msg->qes[i];
-    }
-  double final_cost = msg->final_cost;
+  
   lbfgs::lbfgs_parameter_t lbfgs_params;
   lbfgs::lbfgs_load_default_parameters(&lbfgs_params);
   lbfgs_params.mem_size = 16;
