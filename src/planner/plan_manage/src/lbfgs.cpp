@@ -8,10 +8,13 @@
 
 void Processing(const ego_planner::Optimizedata::ConstPtr &msg)
 {
-//   d 
-//   variable_num_ = 
-//   q = 
-//   final_cost = 
+  int variable_num_ = msg->variable_num_;
+  double q[variable_num_];
+  for (int i = 0; i < variable_num_; ++i)
+    {
+      q[i] = msg->qes[i];
+    }
+  double final_cost = msg->final_cost;
 //   lbfgs_params = 
 //   int result = lbfgs::lbfgs_optimize(variable_num_, q, &final_cost, BsplineOptimizer::costFunctionRebound, NULL, BsplineOptimizer::earlyExit, this, &lbfgs_params);
 }

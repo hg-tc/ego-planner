@@ -56,3 +56,6 @@ add_library( bspline_opt
 target_link_libraries( bspline_opt
     ${catkin_LIBRARIES} 
     )  
+
+add_executable(lbfgs_n src/lbfgs_n.cpp src/my_optimizer.cpp)
+target_link_libraries(lbfgs_n ${catkin_LIBRARIES})
