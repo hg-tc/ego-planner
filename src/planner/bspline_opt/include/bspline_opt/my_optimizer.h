@@ -73,15 +73,22 @@ namespace ego_planner
   public:
     typedef unique_ptr<MyOptimizer> Ptr;
 
-    void setparam(FORCE_STOP_OPTIMIZE_TYPE f, double interval, int ord, 
+    void setparam(int f, double interval, int ord, 
       double l1, double l2, double nl2, double l3,
       double mv, double ma, int in, ControlPoints cps)
     {
-      force_stop_type_ = f;
+      force_stop_type_ = FORCE_STOP_OPTIMIZE_TYPE(f);
       bspline_interval_ = interval;
       order_ = ord;
       lambda1_ = l1;lambda2_ = l2;new_lambda2_ = nl2;lambda3_ = l3;
       max_vel_ = mv;max_acc_ = ma;iter_num_ = in; cps_ = cps;
+    }
+    void setpubparams(ego_planner::Optimizedata &msg)
+    {
+      msg.fo = force_stop_type_;msg.interval = bspline_interval_;
+      msg.ord = order_; msg.in = iter_num_; msg.l1 = lambda1_;
+      msg.l2 = lambda2_; msg.nl2 = new_lambda2_; msg.l3 = lambda3_;
+      msg.mv = max_vel_; msg.ma = max_acc_;
     }
   };
   

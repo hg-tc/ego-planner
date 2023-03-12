@@ -37,7 +37,8 @@ namespace ego_planner
     safety_timer_ = nh.createTimer(ros::Duration(0.05), &EGOReplanFSM::checkCollisionCallback, this);
 
     odom_sub_ = nh.subscribe("/odom_world", 1, &EGOReplanFSM::odometryCallback, this);
-
+    Optimizedata_sub_ = nh.subscribe("/data", 1, &EGOReplanFSM::setaftersubCallback, this);
+    
     bspline_pub_ = nh.advertise<ego_planner::Bspline>("/planning/bspline", 10);
     Optimizedata_pub_ = nh.advertise<ego_planner::Optimizedata>("/planning/Optimizedata", 10);
     data_disp_pub_ = nh.advertise<ego_planner::DataDisp>("/planning/data_display", 100);
@@ -172,7 +173,10 @@ namespace ego_planner
 
     have_odom_ = true;
   }
-
+  void EGOReplanFSM::setaftersubCallback(const Optimizedata::ConstPtr &msg)
+  {
+    
+  }
   void EGOReplanFSM::changeFSMExecState(FSM_EXEC_STATE new_state, string pos_call)
   {
 
