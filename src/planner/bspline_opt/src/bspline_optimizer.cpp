@@ -902,6 +902,7 @@ namespace ego_planner
       /* ---------- optimize ---------- */
       t1 = ros::Time::now();
       // int result = lbfgs::LBFGS_ALREADY_MINIMIZED;
+      //******************************************************************
       ego_planner::Optimizedata Optimizedata;
       Optimizedata.variable_num_ = variable_num_;
       Optimizedata.qes.reserve(variable_num_);
@@ -910,7 +911,10 @@ namespace ego_planner
         Optimizedata.qes.push_back(q[i]);
       }
       Optimizedata.final_cost = final_cost;
+
       Optimizedata_pub_->publish(Optimizedata);
+      //*******************************************************************
+      // while(1){}
       int result = lbfgs::lbfgs_optimize(variable_num_, q, &final_cost, BsplineOptimizer::costFunctionRebound, NULL, BsplineOptimizer::earlyExit, this, &lbfgs_params);
       t2 = ros::Time::now();
       double time_ms = (t2 - t1).toSec() * 1000;

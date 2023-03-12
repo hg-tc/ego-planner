@@ -7,6 +7,7 @@
 #include <plan_env/grid_map.h>
 #include <ros/ros.h>
 #include "bspline_opt/lbfgs.hpp"
+// #include <ego_planner/Optimizedata.h>
 
 // Gradient and elasitc band optimization
 
@@ -153,7 +154,10 @@ namespace ego_planner
     /* for benckmark evaluation only */
   public:
     typedef unique_ptr<BsplineOptimizer> Ptr;
-
+    // void setpubparams(ego_planner::Optimizedata::Ptr &msg)
+    // {
+    //   msg->f = force_stop_type_;msg->interval = bspline_interval_;
+    // }
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   };
 

@@ -1,5 +1,5 @@
-#ifndef _BSPLINE_OPTIMIZER_H_
-#define _BSPLINE_OPTIMIZER_H_
+#ifndef _MY_OPTIMIZER_H_
+#define _MY_OPTIMIZER_H_
 
 #include <Eigen/Eigen>
 #include <path_searching/dyn_a_star.h>
@@ -8,6 +8,8 @@
 #include <ros/ros.h>
 #include "bspline_opt/lbfgs.hpp"
 #include <ego_planner/Optimizedata.h>
+#include <bspline_opt/bspline_optimizer.h>
+
 // Gradient and elasitc band optimization
 
 // Input: a signed distance field and a sequence of points
@@ -15,34 +17,6 @@
 // The format of points: N x 3 matrix, each row is a point
 namespace ego_planner
 {
-  class ControlPoints
-  {
-  public:
-    double clearance;
-    int size;
-    Eigen::MatrixXd points;
-    std::vector<std::vector<Eigen::Vector3d>> base_point; // The point at the statrt of the direction vector (collision point)
-    std::vector<std::vector<Eigen::Vector3d>> direction;  // Direction vector, must be normalized.
-    std::vector<bool> flag_temp;                          // A flag that used in many places. Initialize it everytime before using it.
-    // std::vector<bool> occupancy;
-
-    void resize(const int size_set)
-    {
-      size = size_set;
-
-      base_point.clear();
-      direction.clear();
-      flag_temp.clear();
-      // occupancy.clear();
-
-      points.resize(3, size_set);
-      base_point.resize(size);
-      direction.resize(size);
-      flag_temp.resize(size);
-      // occupancy.resize(size);
-    }
-  };
-  
   class MyOptimizer
   {
 
@@ -50,6 +24,7 @@ namespace ego_planner
     MyOptimizer() {}
     ~MyOptimizer() {}
 
+    
     void Processing(int variable_num_, double *q, double *final_cost);
 
   private:
@@ -97,7 +72,17 @@ namespace ego_planner
     void combineCostRefine(const double *x, double *grad, double &f_combine, const int n);
   public:
     typedef unique_ptr<MyOptimizer> Ptr;
-  
+
+    void setparam(FORCE_STOP_OPTIMIZE_TYPE f, double interval, int ord, 
+      double l1, double l2, double nl2, double l3,
+      double mv, double ma, int in, ControlPoints cps)
+    {
+      force_stop_type_ = f;
+      bspline_interval_ = interval;
+      order_ = ord;
+      lambda1_ = l1;lambda2_ = l2;new_lambda2_ = nl2;lambda3_ = l3;
+      max_vel_ = mv;max_acc_ = ma;iter_num_ = in; cps_ = cps;
+    }
   };
   
 } // namespace ego_planner

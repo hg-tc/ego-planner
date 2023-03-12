@@ -1,9 +1,11 @@
 #include <ros/ros.h>
 #include <std_msgs/String.h>
-#include "bspline_opt/my_optimizer.h"
+#include <bspline_opt/my_optimizer.h>
 #include <ego_planner/Optimizedata.h>
+#include <bspline_opt/bspline_optimizer.h>
 
-
+ego_planner::BsplineOptimizer::Ptr bspline_optimizer_rebound_;
+ego_planner::MyOptimizer::Ptr myoptimizer;
 void Process_callback(const ego_planner::Optimizedata::ConstPtr &msg)
 {
     int variable_num_ = msg->variable_num_;
@@ -13,13 +15,15 @@ void Process_callback(const ego_planner::Optimizedata::ConstPtr &msg)
         q[i] = msg->qes[i];
         }
     double final_cost = msg->final_cost;
-    ego_planner::MyOptimizer::Ptr myoptimizer;
+    
+
+
     myoptimizer->Processing(variable_num_, q, &final_cost);
 }
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "lbfgs");
+  ros::init(argc, argv, "lbfgs_n");
   ros::NodeHandle nh("~");
 
   

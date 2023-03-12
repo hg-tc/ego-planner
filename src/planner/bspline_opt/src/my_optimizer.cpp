@@ -14,8 +14,11 @@ void MyOptimizer::Processing(int variable_num_, double *q, double *final_cost)
   lbfgs_params.max_iterations = 200;
   lbfgs_params.g_epsilon = 0.01;
 //   lbfgs_params = 
-//   int result = lbfgs::lbfgs_optimize(variable_num_, q, &final_cost, costFunctionRebound, NULL, earlyExit, this, &lbfgs_params);
+  int result = lbfgs::lbfgs_optimize(variable_num_, q, final_cost, MyOptimizer::costFunctionRebound, NULL, MyOptimizer::earlyExit, this, &lbfgs_params);
+
 }
+
+
 
 void MyOptimizer::calcSmoothnessCost(const Eigen::MatrixXd &q, double &cost,
                                         Eigen::MatrixXd &gradient, bool falg_use_jerk/* = true*/)
