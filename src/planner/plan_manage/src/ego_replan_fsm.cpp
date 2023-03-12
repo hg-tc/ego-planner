@@ -37,7 +37,7 @@ namespace ego_planner
     safety_timer_ = nh.createTimer(ros::Duration(0.05), &EGOReplanFSM::checkCollisionCallback, this);
 
     odom_sub_ = nh.subscribe("/odom_world", 1, &EGOReplanFSM::odometryCallback, this);
-    Optimizedata_sub_ = nh.subscribe("/data", 1, &EGOReplanFSM::setaftersubCallback, this);
+    Optimizedata_sub_ = nh.subscribe("/result", 1, &EGOReplanFSM::setaftersubCallback, this);
     
     bspline_pub_ = nh.advertise<ego_planner::Bspline>("/planning/bspline", 10);
     Optimizedata_pub_ = nh.advertise<ego_planner::Optimizedata>("/planning/Optimizedata", 10);
@@ -428,7 +428,7 @@ namespace ego_planner
     getLocalTarget();
 
     bool plan_success =
-        planner_manager_->reboundReplan(start_pt_, start_vel_, start_acc_, local_target_pt_, local_target_vel_, (have_new_target_ || flag_use_poly_init), flag_randomPolyTraj, &Optimizedata_pub_);
+        planner_manager_->reboundReplan(start_pt_, start_vel_, start_acc_, local_target_pt_, local_target_vel_, (have_new_target_ || flag_use_poly_init), flag_randomPolyTraj, &Optimizedata_pub_, &wait_for_sendback);
     have_new_target_ = false;
 
     cout << "final_plan_success=" << plan_success << endl;

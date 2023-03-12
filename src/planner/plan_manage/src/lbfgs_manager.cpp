@@ -6,8 +6,8 @@ namespace ego_planner
 
   void LBFGSManager::init(ros::NodeHandle &nh)
   {
-    ros::Publisher pub = nh.advertise<ego_planner::Optimizedata>("result", 10);
-    ros::Subscriber sub = nh.subscribe("data", 10, &LBFGSManager::Process_callback, this);
+    pub = nh.advertise<ego_planner::Optimizedata>("/result", 10);
+    sub = nh.subscribe("/planning/Optimizedata", 10, &LBFGSManager::Process_callback, this);
   }
 
 void LBFGSManager::Process_callback(const Optimizedata::ConstPtr &msg)

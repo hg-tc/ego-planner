@@ -843,11 +843,11 @@ namespace ego_planner
     return false;
   }
 
-  bool BsplineOptimizer::BsplineOptimizeTrajRebound(Eigen::MatrixXd &optimal_points, double ts, ros::Publisher *Optimizedata_pub_)
+  bool BsplineOptimizer::BsplineOptimizeTrajRebound(Eigen::MatrixXd &optimal_points, double ts, ros::Publisher *Optimizedata_pub_, int *wait_for_sendback)
   {
     setBsplineInterval(ts);
 
-    bool flag_success = rebound_optimize(Optimizedata_pub_);
+    bool flag_success = rebound_optimize(Optimizedata_pub_, wait_for_sendback);
 
     optimal_points = cps_.points;
 
@@ -867,7 +867,7 @@ namespace ego_planner
     return flag_success;
   }
 
-  bool BsplineOptimizer::rebound_optimize(ros::Publisher *Optimizedata_pub_)
+  bool BsplineOptimizer::rebound_optimize(ros::Publisher *Optimizedata_pub_, int *wait_for_sendback)
   {
     iter_num_ = 0;
     int start_id = order_;
@@ -914,10 +914,10 @@ namespace ego_planner
       this->setpubparams(Optimizedata);
       Optimizedata_pub_->publish(Optimizedata);
       //*******************************************************************
-      int wait_for_processing = 1;
-      while(wait_for_processing){}
+      // while(wait_for_sendback){}
       
       int result = lbfgs::lbfgs_optimize(variable_num_, q, &final_cost, BsplineOptimizer::costFunctionRebound, NULL, BsplineOptimizer::earlyExit, this, &lbfgs_params);
+      
       t2 = ros::Time::now();
       double time_ms = (t2 - t1).toSec() * 1000;
       double total_time_ms = (t2 - t0).toSec() * 1000;
