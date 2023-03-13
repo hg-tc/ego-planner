@@ -1,18 +1,20 @@
 
 #include <plan_manage/lbfgs_manager.h>
-
+#include <typeinfo>
 namespace ego_planner
 {
 
   void LBFGSManager::init(ros::NodeHandle &nh)
   {
     ROS_INFO("LBFGS node is init");
-    pub = nh.advertise<ego_planner::Optimizedata>("/result", 10);
+    myoptimizer.reset(new MyOptimizer);
+    pub = nh.advertise<ego_planner::Optimizedata>("/result", 100);
     sub = nh.subscribe("/planning/Optimizedata", 10, &LBFGSManager::Process_callback, this);
   }
 
 void LBFGSManager::Process_callback(const Optimizedata::ConstPtr &msg)
 {
+    cout << typeid(msg->interval).name() << endl;
     ROS_INFO("Process_callback is working");
     ROS_INFO("intervel get data is %f", msg->interval);
     int variable_num_ = msg->variable_num_;
@@ -22,7 +24,6 @@ void LBFGSManager::Process_callback(const Optimizedata::ConstPtr &msg)
         q[i] = msg->qes[i];
         }
     double final_cost = msg->final_cost;
-    ego_planner::MyOptimizer::Ptr myoptimizer;
     // data transform
     Eigen::MatrixXd points(3, msg->points.size());
     for (size_t i = 0; i < msg->points.size(); ++i)

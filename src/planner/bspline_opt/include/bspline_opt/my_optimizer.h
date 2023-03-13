@@ -9,7 +9,6 @@
 #include "bspline_opt/lbfgs.hpp"
 #include <ego_planner/Optimizedata.h>
 #include <bspline_opt/bspline_optimizer.h>
-
 // Gradient and elasitc band optimization
 
 // Input: a signed distance field and a sequence of points
@@ -66,7 +65,9 @@ namespace ego_planner
       double l1, double l2, double nl2, double l3,
       double mv, double ma, int in, ControlPoints cps)
     {
-      // ROS_INFO("start setparam");
+      ROS_INFO("start setparam");
+      cout << typeid(interval).name() << endl;
+      cout << typeid(bspline_interval_).name() << endl;
       // ROS_INFO("f is [%d]", f);
       // ROS_INFO("interval is [%f]", interval);
       

@@ -904,19 +904,22 @@ namespace ego_planner
       // int result = lbfgs::LBFGS_ALREADY_MINIMIZED;
       //******************************************************************
       ego_planner::Optimizedata Optimizedata;
-      Optimizedata.variable_num_ = variable_num_;
-      Optimizedata.qes.reserve(variable_num_);
-      for (int i = 0; i < variable_num_; ++i)
-      {
-        Optimizedata.qes.push_back(q[i]);
-      }
-      Optimizedata.final_cost = final_cost;
-      this->setpubparams(Optimizedata);
+      // Optimizedata.variable_num_ = variable_num_;
+      // Optimizedata.qes.reserve(variable_num_);
+      // for (int i = 0; i < variable_num_; ++i)
+      // {
+      //   Optimizedata.qes.push_back(q[i]);
+      // }
+      // Optimizedata.final_cost = final_cost;
+      // this->setpubparams(Optimizedata);
       *wait_for_sendback = 1;
       Optimizedata_pub_->publish(Optimizedata);
       ROS_INFO("Optimizedataintervel is %f", Optimizedata.interval);
       //*******************************************************************
-      // while(wait_for_sendback){Optimizedata_pub_->publish(Optimizedata);}
+      while(*wait_for_sendback){
+        Optimizedata_pub_->publish(Optimizedata);
+        // ROS_INFO("%d", *wait_for_sendback);
+      }
       
       int result = lbfgs::lbfgs_optimize(variable_num_, q, &final_cost, BsplineOptimizer::costFunctionRebound, NULL, BsplineOptimizer::earlyExit, this, &lbfgs_params);
       // int result = result_data;

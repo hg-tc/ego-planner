@@ -19,6 +19,7 @@ namespace ego_planner
     /* ROS utils */
     ros::Subscriber sub;
     ros::Publisher pub;
+    MyOptimizer::Ptr myoptimizer;
     void Process_callback(const Optimizedata::ConstPtr &msg);
   public:
     LBFGSManager(/* args */)

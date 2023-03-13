@@ -36,10 +36,10 @@ namespace ego_planner
     safety_timer_ = nh.createTimer(ros::Duration(0.05), &EGOReplanFSM::checkCollisionCallback, this);
 
     odom_sub_ = nh.subscribe("/odom_world", 1, &EGOReplanFSM::odometryCallback, this);
-    Optimizedata_sub_ = nh.subscribe("/result", 1, &EGOReplanFSM::setaftersubCallback, this);
+    Optimizedata_sub_ = nh.subscribe("/result", 10, &EGOReplanFSM::setaftersubCallback, this);
     
     bspline_pub_ = nh.advertise<ego_planner::Bspline>("/planning/bspline", 10);
-    Optimizedata_pub_ = nh.advertise<ego_planner::Optimizedata>("/planning/Optimizedata", 10);
+    Optimizedata_pub_ = nh.advertise<ego_planner::Optimizedata>("/planning/Optimizedata", 100);
     data_disp_pub_ = nh.advertise<ego_planner::DataDisp>("/planning/data_display", 100);
 
     if (target_type_ == TARGET_TYPE::MANUAL_TARGET)
@@ -244,7 +244,7 @@ namespace ego_planner
 
   void EGOReplanFSM::execFSMCallback(const ros::TimerEvent &e)
   {
-
+    // ROS_INFO("wait flag is %d", wait_for_sendback);
     static int fsm_num = 0;
     fsm_num++;
     if (fsm_num == 100)
