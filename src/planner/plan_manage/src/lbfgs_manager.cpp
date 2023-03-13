@@ -6,12 +6,15 @@ namespace ego_planner
 
   void LBFGSManager::init(ros::NodeHandle &nh)
   {
+    ROS_INFO("LBFGS node is init");
     pub = nh.advertise<ego_planner::Optimizedata>("/result", 10);
     sub = nh.subscribe("/planning/Optimizedata", 10, &LBFGSManager::Process_callback, this);
   }
 
 void LBFGSManager::Process_callback(const Optimizedata::ConstPtr &msg)
 {
+    ROS_INFO("Process_callback is working");
+    ROS_INFO("intervel get data is %f", msg->interval);
     int variable_num_ = msg->variable_num_;
     double q[variable_num_];
     for (int i = 0; i < variable_num_; ++i)
@@ -47,9 +50,12 @@ void LBFGSManager::Process_callback(const Optimizedata::ConstPtr &msg)
       cps.direction[i].push_back(direction);
     }
     int fo = msg->fo;
+    ROS_INFO("wait for setparam, fo is %d", msg->fo);
     // set my optimizer
     myoptimizer->setparam(fo,msg->interval,msg->ord,msg->l1,msg->l2,msg->nl2,msg->l3, msg->mv, msg->ma, msg->in, cps);
-    myoptimizer->Processing(variable_num_, q, &final_cost);
+    ROS_INFO("wait for processing");
+    int result = myoptimizer->Processing(variable_num_, q, &final_cost);
+    ROS_INFO("wait for sendback");
     // settings for sendback
     ego_planner::Optimizedata Optimizedata;
     Optimizedata.variable_num_ = variable_num_;
@@ -58,9 +64,12 @@ void LBFGSManager::Process_callback(const Optimizedata::ConstPtr &msg)
     {
       Optimizedata.qes.push_back(q[i]);
     }
+    ROS_INFO("variable_num_ is [%d]", variable_num_);
     Optimizedata.final_cost = final_cost;
     myoptimizer->setpubparams(Optimizedata);
+    ROS_INFO("variable_num_ in msg is [%d]", Optimizedata.variable_num_);
       // Optimizedata_pub_->publish(Optimizedata);
+    Optimizedata.result = result; 
     pub.publish(Optimizedata);
 }
 

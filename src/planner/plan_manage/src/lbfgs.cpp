@@ -9,6 +9,7 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "lbfgs_n");
   ros::NodeHandle nh("~");
 
+  ROS_INFO("LBFGS node is on");
   ego_planner::LBFGSManager lbfgs;
   lbfgs.init(nh);
 

@@ -17,7 +17,7 @@ geometry_msgs/Point[] points
 geometry_msgs/Point[] base_point
 geometry_msgs/Point[] direction
 
-
+int32 result
 # int32 mem_size
 # float64 g_epsilon
 # int32 past

@@ -5,7 +5,7 @@
 namespace ego_planner
 {
 
-void MyOptimizer::Processing(int variable_num_, double *q, double *final_cost)
+int MyOptimizer::Processing(int variable_num_, double *q, double *final_cost)
 {
   
   lbfgs::lbfgs_parameter_t lbfgs_params;
@@ -15,7 +15,7 @@ void MyOptimizer::Processing(int variable_num_, double *q, double *final_cost)
   lbfgs_params.g_epsilon = 0.01;
 //   lbfgs_params = 
   int result = lbfgs::lbfgs_optimize(variable_num_, q, final_cost, MyOptimizer::costFunctionRebound, NULL, MyOptimizer::earlyExit, this, &lbfgs_params);
-
+  return result;
 }
 
 

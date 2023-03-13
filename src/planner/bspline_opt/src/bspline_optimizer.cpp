@@ -912,11 +912,20 @@ namespace ego_planner
       }
       Optimizedata.final_cost = final_cost;
       this->setpubparams(Optimizedata);
+      *wait_for_sendback = 1;
       Optimizedata_pub_->publish(Optimizedata);
+      ROS_INFO("Optimizedataintervel is %f", Optimizedata.interval);
       //*******************************************************************
-      // while(wait_for_sendback){}
+      // while(wait_for_sendback){Optimizedata_pub_->publish(Optimizedata);}
       
       int result = lbfgs::lbfgs_optimize(variable_num_, q, &final_cost, BsplineOptimizer::costFunctionRebound, NULL, BsplineOptimizer::earlyExit, this, &lbfgs_params);
+      // int result = result_data;
+      // ROS_INFO("vn_data %d vs variable_num_ %d", vn_data, variable_num_);
+      // for (int i = 0; i < vn_data; ++i)
+      // {
+      //   q[i] = q_data[i];
+      // }
+      // final_cost = cost_data;
       
       t2 = ros::Time::now();
       double time_ms = (t2 - t1).toSec() * 1000;

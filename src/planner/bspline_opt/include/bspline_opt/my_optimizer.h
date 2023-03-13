@@ -25,7 +25,7 @@ namespace ego_planner
     ~MyOptimizer() {}
 
     
-    void Processing(int variable_num_, double *q, double *final_cost);
+    int Processing(int variable_num_, double *q, double *final_cost);
 
   private:
 
@@ -36,26 +36,15 @@ namespace ego_planner
       STOP_FOR_ERROR
     } force_stop_type_;
 
-    // main input
-    // Eigen::MatrixXd control_points_;     // B-spline control points, N x dim
-    double bspline_interval_; // B-spline knot span
 
-    /* optimization parameters */
+    double bspline_interval_; 
     int order_;                    // bspline degree
     double lambda1_;               // jerk smoothness weight
     double lambda2_, new_lambda2_; // distance weight
     double lambda3_;               // feasibility weight
-
     double max_vel_, max_acc_; // dynamic limits
-
-    // int variable_num_;              // optimization variables
     int iter_num_;                  // iteration of the solver
-
     ControlPoints cps_;
-
-    /* cost function */
-    /* calculate each part of cost function with control points q as input */
-
 
     // q contains all control points
     void calcSmoothnessCost(const Eigen::MatrixXd &q, double &cost,
@@ -77,11 +66,20 @@ namespace ego_planner
       double l1, double l2, double nl2, double l3,
       double mv, double ma, int in, ControlPoints cps)
     {
-      force_stop_type_ = FORCE_STOP_OPTIMIZE_TYPE(f);
-      bspline_interval_ = interval;
-      order_ = ord;
-      lambda1_ = l1;lambda2_ = l2;new_lambda2_ = nl2;lambda3_ = l3;
-      max_vel_ = mv;max_acc_ = ma;iter_num_ = in; cps_ = cps;
+      // ROS_INFO("start setparam");
+      // ROS_INFO("f is [%d]", f);
+      // ROS_INFO("interval is [%f]", interval);
+      
+      // if(f == 0) force_stop_type_ = DONT_STOP;
+      // else if(f == 1) force_stop_type_ = STOP_FOR_REBOUND;
+      // else force_stop_type_ = STOP_FOR_ERROR;
+      // ROS_INFO("after set force");
+      // bspline_interval_ = interval;
+      // order_ = ord;
+      // lambda1_ = l1;lambda2_ = l2;new_lambda2_ = nl2;lambda3_ = l3;
+      // ROS_INFO("before set cps");
+      // max_vel_ = mv;max_acc_ = ma;iter_num_ = in; cps_ = cps;
+      // ROS_INFO("finish setparam");
     }
     void setpubparams(ego_planner::Optimizedata &msg)
     {

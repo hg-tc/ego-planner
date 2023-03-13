@@ -101,7 +101,6 @@ namespace ego_planner
     void setaftersubCallback(const Optimizedata::ConstPtr &msg);
 
     bool checkCollision();
-
   public:
     EGOReplanFSM(/* args */)
     {

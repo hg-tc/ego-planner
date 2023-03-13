@@ -151,15 +151,42 @@ namespace ego_planner
     void combineCostRebound(const double *x, double *grad, double &f_combine, const int n);
     void combineCostRefine(const double *x, double *grad, double &f_combine, const int n);
 
+    int result_data;
+    int vn_data;
+    double *q_data;
+    double cost_data;
     /* for benckmark evaluation only */
   public:
     typedef unique_ptr<BsplineOptimizer> Ptr;
     void setpubparams(ego_planner::Optimizedata &msg)
     {
-      msg.fo = force_stop_type_;msg.interval = bspline_interval_;
+      if(force_stop_type_ == DONT_STOP) msg.fo = 0;
+      else if(force_stop_type_ == STOP_FOR_REBOUND) msg.fo = 1;
+      else msg.fo = 2;
+      msg.interval = bspline_interval_;
+
       msg.ord = order_; msg.in = iter_num_; msg.l1 = lambda1_;
       msg.l2 = lambda2_; msg.nl2 = new_lambda2_; msg.l3 = lambda3_;
       msg.mv = max_vel_; msg.ma = max_acc_;
+    }
+    void setparam(int f, double interval, int ord, 
+      double l1, double l2, double nl2, double l3,
+      double mv, double ma, int in, ControlPoints cps)
+    {
+      if(f == 0) force_stop_type_ = DONT_STOP;
+      else if(f == 1) force_stop_type_ = STOP_FOR_REBOUND;
+      else force_stop_type_ = STOP_FOR_ERROR;
+      bspline_interval_ = interval;
+      order_ = ord;
+      lambda1_ = l1;lambda2_ = l2;new_lambda2_ = nl2;lambda3_ = l3;
+      max_vel_ = mv;max_acc_ = ma;iter_num_ = in; cps_ = cps;
+    }
+    void setdata(int res, int vn, double *p, double fincost)
+    {
+      result_data = res;
+      vn_data = vn;
+      q_data = p;
+      cost_data = fincost;
     }
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   };
