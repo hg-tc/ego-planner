@@ -214,7 +214,9 @@ namespace ego_planner
     ROS_INFO("wait for setparam, fo is %d", msg->fo);
     // set my optimizer
     planner_manager_->setparam(fo,msg->interval,msg->ord,msg->l1,msg->l2,msg->nl2,msg->l3, msg->mv, msg->ma, msg->in, cps);
+    ROS_INFO("wait flag is %d", wait_for_sendback);
     wait_for_sendback = 0;
+    ROS_INFO("wait flag is %d", wait_for_sendback);
   }
   void EGOReplanFSM::changeFSMExecState(FSM_EXEC_STATE new_state, string pos_call)
   {

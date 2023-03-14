@@ -917,7 +917,7 @@ namespace ego_planner
       ROS_INFO("Optimizedataintervel is %f", Optimizedata.interval);
       //*******************************************************************
       while(*wait_for_sendback){
-        Optimizedata_pub_->publish(Optimizedata);
+        // Optimizedata_pub_->publish(Optimizedata);
         // ROS_INFO("%d", *wait_for_sendback);
       }
       
