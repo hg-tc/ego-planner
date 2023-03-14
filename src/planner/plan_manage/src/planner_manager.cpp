@@ -41,7 +41,7 @@ namespace ego_planner
 
   bool EGOPlannerManager::reboundReplan(Eigen::Vector3d start_pt, Eigen::Vector3d start_vel,
                                         Eigen::Vector3d start_acc, Eigen::Vector3d local_target_pt,
-                                        Eigen::Vector3d local_target_vel, bool flag_polyInit, bool flag_randomPolyTraj, ros::Publisher *Optimizedata_pub_, int *wait_for_sendback)
+                                        Eigen::Vector3d local_target_vel, bool flag_polyInit, bool flag_randomPolyTraj, ros::ServiceClient *Optdata_client)
   {
 
     static int count = 0;
@@ -223,7 +223,7 @@ namespace ego_planner
     t_start = ros::Time::now();
 
     /*** STEP 2: OPTIMIZE ***/
-    bool flag_step_1_success = bspline_optimizer_rebound_->BsplineOptimizeTrajRebound(ctrl_pts, ts, Optimizedata_pub_, wait_for_sendback);
+    bool flag_step_1_success = bspline_optimizer_rebound_->BsplineOptimizeTrajRebound(ctrl_pts, ts, Optdata_client);
     cout << "first_optimize_step_success=" << flag_step_1_success << endl;
     if (!flag_step_1_success)
     {

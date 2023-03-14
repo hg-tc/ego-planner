@@ -7,7 +7,7 @@
 #include <plan_env/grid_map.h>
 #include <ros/ros.h>
 #include "bspline_opt/lbfgs.hpp"
-#include <ego_planner/Optimizedata.h>
+#include <lbfgs/Optdata.h>
 #include <bspline_opt/bspline_optimizer.h>
 // Gradient and elasitc band optimization
 
@@ -82,7 +82,7 @@ namespace ego_planner
       // max_vel_ = mv;max_acc_ = ma;iter_num_ = in; cps_ = cps;
       // ROS_INFO("finish setparam");
     }
-    void setpubparams(ego_planner::Optimizedata &msg)
+    void setpubparams(lbfgs::Optdata::Response &msg)
     {
       msg.fo = force_stop_type_;msg.interval = bspline_interval_;
       msg.ord = order_; msg.in = iter_num_; msg.l1 = lambda1_;

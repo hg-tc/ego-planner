@@ -18,6 +18,7 @@
 #include <ego_planner/Optimizedata.h>
 #include <plan_manage/planner_manager.h>
 #include <traj_utils/planning_visualization.h>
+#include <lbfgs/Optdata.h>
 
 using std::vector;
 
@@ -76,8 +77,9 @@ namespace ego_planner
     /* ROS utils */
     ros::NodeHandle node_;
     ros::Timer exec_timer_, safety_timer_;
-    ros::Subscriber waypoint_sub_, odom_sub_, Optimizedata_sub_;
-    ros::Publisher replan_pub_, new_pub_, bspline_pub_, data_disp_pub_, Optimizedata_pub_;
+    ros::Subscriber waypoint_sub_, odom_sub_;
+    ros::Publisher replan_pub_, new_pub_, bspline_pub_, data_disp_pub_;
+    ros::ServiceClient Optdata_client;
 
     int wait_for_sendback;
     /* helper functions */

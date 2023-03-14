@@ -1,6 +1,6 @@
 #include "bspline_opt/bspline_optimizer.h"
 #include "bspline_opt/gradient_descent_optimizer.h"
-#include <ego_planner/Optimizedata.h>
+#include <lbfgs/Optdata.h>
 // using namespace std;
 
 namespace ego_planner
@@ -843,11 +843,11 @@ namespace ego_planner
     return false;
   }
 
-  bool BsplineOptimizer::BsplineOptimizeTrajRebound(Eigen::MatrixXd &optimal_points, double ts, ros::Publisher *Optimizedata_pub_, int *wait_for_sendback)
+  bool BsplineOptimizer::BsplineOptimizeTrajRebound(Eigen::MatrixXd &optimal_points, double ts, ros::ServiceClient *Optdata_client)
   {
     setBsplineInterval(ts);
 
-    bool flag_success = rebound_optimize(Optimizedata_pub_, wait_for_sendback);
+    bool flag_success = rebound_optimize(Optdata_client);
 
     optimal_points = cps_.points;
 
@@ -867,7 +867,7 @@ namespace ego_planner
     return flag_success;
   }
 
-  bool BsplineOptimizer::rebound_optimize(ros::Publisher *Optimizedata_pub_, int *wait_for_sendback)
+  bool BsplineOptimizer::rebound_optimize(ros::ServiceClient *Optdata_client)
   {
     iter_num_ = 0;
     int start_id = order_;
@@ -903,24 +903,19 @@ namespace ego_planner
       t1 = ros::Time::now();
       // int result = lbfgs::LBFGS_ALREADY_MINIMIZED;
       //******************************************************************
-      ego_planner::Optimizedata Optimizedata;
-      // Optimizedata.variable_num_ = variable_num_;
-      // Optimizedata.qes.reserve(variable_num_);
+      lbfgs::Optdata Optimizedata;
+      Optimizedata.request.variable_num_ = variable_num_;
+      // Optimizedata.request.qes.reserve(variable_num_);
       // for (int i = 0; i < variable_num_; ++i)
       // {
-      //   Optimizedata.qes.push_back(q[i]);
+      //   Optimizedata.request.qes.push_back(q[i]);
       // }
-      // Optimizedata.final_cost = final_cost;
-      // this->setpubparams(Optimizedata);
-      *wait_for_sendback = 1;
-      Optimizedata_pub_->publish(Optimizedata);
-      ROS_INFO("Optimizedataintervel is %f", Optimizedata.interval);
+      // Optimizedata.request.final_cost = final_cost;
+      this->setpubparams(Optimizedata);
+      bool flag = Optdata_client->call(Optimizedata);
       //*******************************************************************
-      while(*wait_for_sendback){
-        // Optimizedata_pub_->publish(Optimizedata);
-        // ROS_INFO("%d", *wait_for_sendback);
-      }
-      
+      if(flag){ROS_INFO("client call success");}
+      else{ROS_INFO("client call fail");}
       int result = lbfgs::lbfgs_optimize(variable_num_, q, &final_cost, BsplineOptimizer::costFunctionRebound, NULL, BsplineOptimizer::earlyExit, this, &lbfgs_params);
       // int result = result_data;
       // ROS_INFO("vn_data %d vs variable_num_ %d", vn_data, variable_num_);

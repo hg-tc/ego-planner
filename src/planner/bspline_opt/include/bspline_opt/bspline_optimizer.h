@@ -7,7 +7,7 @@
 #include <plan_env/grid_map.h>
 #include <ros/ros.h>
 #include "bspline_opt/lbfgs.hpp"
-#include <ego_planner/Optimizedata.h>
+#include <lbfgs/Optdata.h>
 
 // Gradient and elasitc band optimization
 
@@ -79,7 +79,7 @@ namespace ego_planner
     std::vector<Eigen::Vector3d> ref_pts_;
 
     std::vector<std::vector<Eigen::Vector3d>> initControlPoints(Eigen::MatrixXd &init_points, bool flag_first_init = true);
-    bool BsplineOptimizeTrajRebound(Eigen::MatrixXd &optimal_points, double ts, ros::Publisher *Optimizedata_pub_, int *wait_for_sendback); // must be called after initControlPoints()
+    bool BsplineOptimizeTrajRebound(Eigen::MatrixXd &optimal_points, double ts, ros::ServiceClient *Optdata_client); // must be called after initControlPoints()
     bool BsplineOptimizeTrajRefine(const Eigen::MatrixXd &init_points, const double ts, Eigen::MatrixXd &optimal_points);
 
     inline int getOrder(void) { return order_; }
@@ -146,7 +146,7 @@ namespace ego_planner
     static double costFunctionRebound(void *func_data, const double *x, double *grad, const int n);
     static double costFunctionRefine(void *func_data, const double *x, double *grad, const int n);
 
-    bool rebound_optimize(ros::Publisher *Optimizedata_pub_, int *wait_for_sendback);
+    bool rebound_optimize(ros::ServiceClient *Optdata_client);
     bool refine_optimize();
     void combineCostRebound(const double *x, double *grad, double &f_combine, const int n);
     void combineCostRefine(const double *x, double *grad, double &f_combine, const int n);
@@ -158,16 +158,16 @@ namespace ego_planner
     /* for benckmark evaluation only */
   public:
     typedef unique_ptr<BsplineOptimizer> Ptr;
-    void setpubparams(ego_planner::Optimizedata &msg)
+    void setpubparams(lbfgs::Optdata &msg)
     {
-      if(force_stop_type_ == DONT_STOP) msg.fo = 0;
-      else if(force_stop_type_ == STOP_FOR_REBOUND) msg.fo = 1;
-      else msg.fo = 2;
-      msg.interval = bspline_interval_;
+      if(force_stop_type_ == DONT_STOP) msg.request.fo = 0;
+      else if(force_stop_type_ == STOP_FOR_REBOUND) msg.request.fo = 1;
+      else msg.request.fo = 2;
+      msg.request.interval = bspline_interval_;
 
-      msg.ord = order_; msg.in = iter_num_; msg.l1 = lambda1_;
-      msg.l2 = lambda2_; msg.nl2 = new_lambda2_; msg.l3 = lambda3_;
-      msg.mv = max_vel_; msg.ma = max_acc_;
+      msg.request.ord = order_; msg.request.in = iter_num_; msg.request.l1 = lambda1_;
+      msg.request.l2 = lambda2_; msg.request.nl2 = new_lambda2_; msg.request.l3 = lambda3_;
+      msg.request.mv = max_vel_; msg.request.ma = max_acc_;
     }
     void setparam(int f, double interval, int ord, 
       double l1, double l2, double nl2, double l3,
