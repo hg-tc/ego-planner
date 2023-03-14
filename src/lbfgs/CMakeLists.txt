@@ -120,7 +120,7 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
- INCLUDE_DIRS include
+#  INCLUDE_DIRS include
  LIBRARIES lbfgs
  CATKIN_DEPENDS roscpp rospy std_msgs plan_env path_searching bspline_opt traj_utils message_runtime
 #  DEPENDS system_lib
