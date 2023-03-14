@@ -904,7 +904,7 @@ namespace ego_planner
       // int result = lbfgs::LBFGS_ALREADY_MINIMIZED;
       //******************************************************************
       lbfgs::Optdata Optimizedata;
-      Optimizedata.request.variable_num_ = variable_num_;
+      // Optimizedata.request.variable_num_ = variable_num_;
       // Optimizedata.request.qes.reserve(variable_num_);
       // for (int i = 0; i < variable_num_; ++i)
       // {
