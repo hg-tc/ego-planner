@@ -66,20 +66,18 @@ namespace ego_planner
       double mv, double ma, int in, ControlPoints cps)
     {
       ROS_INFO("start setparam");
-      cout << typeid(interval).name() << endl;
-      cout << typeid(bspline_interval_).name() << endl;
       // ROS_INFO("f is [%d]", f);
       // ROS_INFO("interval is [%f]", interval);
       
-      // if(f == 0) force_stop_type_ = DONT_STOP;
-      // else if(f == 1) force_stop_type_ = STOP_FOR_REBOUND;
-      // else force_stop_type_ = STOP_FOR_ERROR;
+      if(f == 0) force_stop_type_ = DONT_STOP;
+      else if(f == 1) force_stop_type_ = STOP_FOR_REBOUND;
+      else force_stop_type_ = STOP_FOR_ERROR;
       // ROS_INFO("after set force");
-      // bspline_interval_ = interval;
-      // order_ = ord;
-      // lambda1_ = l1;lambda2_ = l2;new_lambda2_ = nl2;lambda3_ = l3;
+      bspline_interval_ = interval;
+      order_ = ord;
+      lambda1_ = l1;lambda2_ = l2;new_lambda2_ = nl2;lambda3_ = l3;
       // ROS_INFO("before set cps");
-      // max_vel_ = mv;max_acc_ = ma;iter_num_ = in; cps_ = cps;
+      max_vel_ = mv;max_acc_ = ma;iter_num_ = in; cps_ = cps;
       // ROS_INFO("finish setparam");
     }
     void setpubparams(lbfgs::Optdata::Response &msg)

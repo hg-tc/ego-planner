@@ -168,6 +168,8 @@ namespace ego_planner
       msg.request.ord = order_; msg.request.in = iter_num_; msg.request.l1 = lambda1_;
       msg.request.l2 = lambda2_; msg.request.nl2 = new_lambda2_; msg.request.l3 = lambda3_;
       msg.request.mv = max_vel_; msg.request.ma = max_acc_;
+      msg.request.clearance = cps_.clearance;
+      msg.request.size = cps_.size;
     }
     void setparam(int f, double interval, int ord, 
       double l1, double l2, double nl2, double l3,

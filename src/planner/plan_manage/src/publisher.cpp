@@ -1,19 +1,18 @@
 #include <ros/ros.h>
+#include <lbfgs/Optdata.h>
 
-#include <ego_planner/Optimizedata.h>
 
-using namespace ego_planner;
 
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "publisher");
   ros::NodeHandle nh("~");
 
-  ros::Publisher pub = nh.advertise<ego_planner::Optimizedata>("/planning/Optimizedata", 10);
-  ego_planner::Optimizedata data;
-  data.interval =0.12;
+  ros::ServiceClient Optdata_client = nh.serviceClient<lbfgs::Optdata>("/lbfgs/Optdata");
+  lbfgs::Optdata data;
+  data.request.final_cost =73;
   while(ros::ok()){
-    pub.publish(data);
+    Optdata_client.call(data);
   }
 
 

@@ -904,13 +904,25 @@ namespace ego_planner
       // int result = lbfgs::LBFGS_ALREADY_MINIMIZED;
       //******************************************************************
       lbfgs::Optdata Optimizedata;
-      // Optimizedata.request.variable_num_ = variable_num_;
-      // Optimizedata.request.qes.reserve(variable_num_);
-      // for (int i = 0; i < variable_num_; ++i)
-      // {
-      //   Optimizedata.request.qes.push_back(q[i]);
-      // }
-      // Optimizedata.request.final_cost = final_cost;
+      Optimizedata.request.variable_num_ = variable_num_;
+      Optimizedata.request.qes.reserve(variable_num_);
+      for (int i = 0; i < variable_num_; ++i)
+      {
+        Optimizedata.request.qes.push_back(q[i]);
+      }
+      Optimizedata.request.final_cost = final_cost;
+      for (size_t i = 0; i < cps_.size; ++i)
+      {
+        geometry_msgs::Point pt;
+        pt.x = cps_.points(0, i);
+        pt.y = cps_.points(1, i);
+        pt.z = cps_.points(2, i);
+        Optimizedata.request.points.push_back(pt);
+        // geometry_msgs::Point pt2;
+        // pt2.x = cps_.base_point[i](0);
+
+      }
+      
       this->setpubparams(Optimizedata);
       bool flag = Optdata_client->call(Optimizedata);
       //*******************************************************************

@@ -130,5 +130,5 @@
 
   </node>
 
-  <!-- <node pkg="ego_planner" name="lbfgs" type="lbfgs" output="screen" /> -->
+  <node pkg="lbfgs" name="lbfgs_node" type="lbfgs_node" output="screen" />
 </launch>
