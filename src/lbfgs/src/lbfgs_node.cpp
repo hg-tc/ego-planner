@@ -35,18 +35,20 @@ bool Process_callback(lbfgs::Optdata::Request &request,
     cps.clearance = request.clearance;
     cps.resize(request.size);
     cps.points = points;
-    Eigen::Vector3d base_point;
+    ROS_INFO("3");
     for (int i = 0; i<request.base_point.size(); ++i)
     {
+      Eigen::Vector3d base_point;
       base_point[0] = request.base_point[i].x;
       base_point[1] = request.base_point[i].y;
       base_point[2] = request.base_point[i].z;
       cps.base_point[i].push_back(base_point);
     }
-    ROS_INFO("3");
-    Eigen::Vector3d direction;
+    ROS_INFO("4");
+    
     for (int i = 0; i<request.direction.size(); ++i)
     {
+      Eigen::Vector3d direction;
       direction[0] = request.direction[i].x;
       direction[1] = request.direction[i].y;
       direction[2] = request.direction[i].z;

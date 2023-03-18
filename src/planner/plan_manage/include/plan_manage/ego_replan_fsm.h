@@ -100,7 +100,6 @@ namespace ego_planner
     void checkCollisionCallback(const ros::TimerEvent &e);
     void waypointCallback(const nav_msgs::PathConstPtr &msg);
     void odometryCallback(const nav_msgs::OdometryConstPtr &msg);
-    void setaftersubCallback(const Optimizedata::ConstPtr &msg);
 
     bool checkCollision();
   public:

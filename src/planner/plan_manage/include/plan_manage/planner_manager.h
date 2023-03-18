@@ -69,10 +69,6 @@ namespace ego_planner
       {
         bspline_optimizer_rebound_->setparam(fo,interval,ord,l1,l2,nl2,l3, mv, ma, in, cps);
       }
-    void setdata(int result, int vn, double *p, double fincost)
-    {
-        bspline_optimizer_rebound_->setdata(result, vn, p, fincost);
-    }
     // !SECTION
   };
 } // namespace ego_planner

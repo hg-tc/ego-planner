@@ -911,31 +911,45 @@ namespace ego_planner
         Optimizedata.request.qes.push_back(q[i]);
       }
       Optimizedata.request.final_cost = final_cost;
-      for (size_t i = 0; i < cps_.size; ++i)
+      for (int i = 0; i < cps_.size; ++i)
       {
         geometry_msgs::Point pt;
         pt.x = cps_.points(0, i);
         pt.y = cps_.points(1, i);
         pt.z = cps_.points(2, i);
         Optimizedata.request.points.push_back(pt);
-        // geometry_msgs::Point pt2;
-        // pt2.x = cps_.base_point[i](0);
+        for(int j = 0;j<cps_.base_point[i].size();j++)
+        {
+          geometry_msgs::Point pt2;
+          pt2.x = cps_.base_point[i][j](0);
+          pt2.y = cps_.base_point[i][j](1);
+          pt2.z = cps_.base_point[i][j](2);
+          Optimizedata.request.base_point.push_back(pt2);
+        }
+        for(int j = 0;j<cps_.direction[i].size();j++)
+        {
+          geometry_msgs::Point pt3;
+          pt3.x = cps_.direction[i][j](0);
+          pt3.y = cps_.direction[i][j](1);
+          pt3.z = cps_.direction[i][j](2);
+          Optimizedata.request.direction.push_back(pt3);
+        }
 
       }
       
       this->setpubparams(Optimizedata);
       bool flag = Optdata_client->call(Optimizedata);
       //*******************************************************************
-      if(flag){ROS_INFO("client call success");}
-      else{ROS_INFO("client call fail");}
+      // if(flag){ROS_INFO("client call success");}
+      // else{ROS_INFO("client call fail");}
       int result = lbfgs::lbfgs_optimize(variable_num_, q, &final_cost, BsplineOptimizer::costFunctionRebound, NULL, BsplineOptimizer::earlyExit, this, &lbfgs_params);
-      // int result = result_data;
-      // ROS_INFO("vn_data %d vs variable_num_ %d", vn_data, variable_num_);
-      // for (int i = 0; i < vn_data; ++i)
+      
+      // result = Optimizedata.response.result;
+      // for (int i = 0; i < variable_num_; ++i)
       // {
-      //   q[i] = q_data[i];
+      //   q[i] = Optimizedata.response.qes[i];
       // }
-      // final_cost = cost_data;
+      // final_cost = Optimizedata.response.final_cost;
       
       t2 = ros::Time::now();
       double time_ms = (t2 - t1).toSec() * 1000;

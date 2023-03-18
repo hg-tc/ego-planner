@@ -151,10 +151,7 @@ namespace ego_planner
     void combineCostRebound(const double *x, double *grad, double &f_combine, const int n);
     void combineCostRefine(const double *x, double *grad, double &f_combine, const int n);
 
-    int result_data;
-    int vn_data;
-    double *q_data;
-    double cost_data;
+
     /* for benckmark evaluation only */
   public:
     typedef unique_ptr<BsplineOptimizer> Ptr;
@@ -182,13 +179,6 @@ namespace ego_planner
       order_ = ord;
       lambda1_ = l1;lambda2_ = l2;new_lambda2_ = nl2;lambda3_ = l3;
       max_vel_ = mv;max_acc_ = ma;iter_num_ = in; cps_ = cps;
-    }
-    void setdata(int res, int vn, double *p, double fincost)
-    {
-      result_data = res;
-      vn_data = vn;
-      q_data = p;
-      cost_data = fincost;
     }
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   };
