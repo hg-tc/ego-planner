@@ -130,5 +130,5 @@
 
   </node>
 
-  <node pkg="lbfgs" name="lbfgs_node" type="lbfgs_node" output="screen" />
+  <!-- <node pkg="lbfgs" name="lbfgs_node" type="lbfgs_node" output="screen" /> -->
 </launch>

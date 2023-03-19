@@ -855,13 +855,13 @@ namespace ego_planner
     return flag_success;
   }
 
-  bool BsplineOptimizer::BsplineOptimizeTrajRefine(const Eigen::MatrixXd &init_points, const double ts, Eigen::MatrixXd &optimal_points)
+  bool BsplineOptimizer::BsplineOptimizeTrajRefine(const Eigen::MatrixXd &init_points, const double ts, Eigen::MatrixXd &optimal_points, ros::ServiceClient *Optdata_client)
   {
 
     setControlPoints(init_points);
     setBsplineInterval(ts);
 
-    bool flag_success = refine_optimize();
+    bool flag_success = refine_optimize(Optdata_client);
 
     optimal_points = cps_.points;
 
@@ -1027,7 +1027,7 @@ namespace ego_planner
     return success;
   }
 
-  bool BsplineOptimizer::refine_optimize()
+  bool BsplineOptimizer::refine_optimize(ros::ServiceClient *Optdata_client)
   {
     iter_num_ = 0;
     int start_id = order_;
@@ -1050,7 +1050,54 @@ namespace ego_planner
       lbfgs_params.max_iterations = 200;
       lbfgs_params.g_epsilon = 0.001;
 
-      int result = 1;
+      lbfgs::Optdata Optimizedata;
+      Optimizedata.request.variable_num_ = variable_num_;
+      Optimizedata.request.qes.reserve(variable_num_);
+      for (int i = 0; i < variable_num_; ++i)
+      {
+        Optimizedata.request.qes.push_back(q[i]);
+      }
+      Optimizedata.request.final_cost = final_cost;
+      for (int i = 0; i < cps_.size; ++i)
+      {
+        geometry_msgs::Point pt;
+        pt.x = cps_.points(0, i);
+        pt.y = cps_.points(1, i);
+        pt.z = cps_.points(2, i);
+        Optimizedata.request.points.push_back(pt);
+        int j= 0;
+        for(j = 0;j<cps_.base_point[i].size();j++)
+        {
+          geometry_msgs::Point pt2;
+          pt2.x = cps_.base_point[i][j](0);
+          pt2.y = cps_.base_point[i][j](1);
+          pt2.z = cps_.base_point[i][j](2);
+          Optimizedata.request.base_point.push_back(pt2);          
+        }
+        Optimizedata.request.weightb.push_back(j);
+
+        for(j = 0;j<cps_.direction[i].size();j++)
+        {
+          geometry_msgs::Point pt3;
+          pt3.x = cps_.direction[i][j](0);
+          pt3.y = cps_.direction[i][j](1);
+          pt3.z = cps_.direction[i][j](2);
+          Optimizedata.request.direction.push_back(pt3);
+        }
+        Optimizedata.request.weightd.push_back(j);
+
+      }
+      
+      this->setpubparams(Optimizedata);
+      bool flag = Optdata_client->call(Optimizedata);
+      int result = Optimizedata.response.result;
+      for (int i = 0; i < variable_num_; ++i)
+      {
+        q[i] = Optimizedata.response.qes[i];
+      }
+      final_cost = Optimizedata.response.final_cost;
+      this->setparam(Optimizedata);
+      
       // int result = lbfgs::lbfgs_optimize(variable_num_, q, &final_cost, BsplineOptimizer::costFunctionRefine, NULL, NULL, this, &lbfgs_params);
       if (result == lbfgs::LBFGS_CONVERGENCE ||
           result == lbfgs::LBFGSERR_MAXIMUMITERATION ||

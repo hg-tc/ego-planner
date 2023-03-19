@@ -247,7 +247,7 @@ namespace ego_planner
       cout << "Need to reallocate time." << endl;
 
       Eigen::MatrixXd optimal_control_points;
-      flag_step_2_success = refineTrajAlgo(pos, start_end_derivatives, ratio, ts, optimal_control_points);
+      flag_step_2_success = refineTrajAlgo(pos, start_end_derivatives, ratio, ts, optimal_control_points, Optdata_client);
       if (flag_step_2_success)
         pos = UniformBspline(optimal_control_points, 3, ts);
     }
@@ -428,7 +428,7 @@ namespace ego_planner
     return true;
   }
 
-  bool EGOPlannerManager::refineTrajAlgo(UniformBspline &traj, vector<Eigen::Vector3d> &start_end_derivative, double ratio, double &ts, Eigen::MatrixXd &optimal_control_points)
+  bool EGOPlannerManager::refineTrajAlgo(UniformBspline &traj, vector<Eigen::Vector3d> &start_end_derivative, double ratio, double &ts, Eigen::MatrixXd &optimal_control_points, ros::ServiceClient *Optdata_client)
   {
     double t_inc;
 
@@ -444,7 +444,7 @@ namespace ego_planner
     for (double t = 0; t < traj.getTimeSum() + 1e-4; t += t_step)
       bspline_optimizer_rebound_->ref_pts_.push_back(traj.evaluateDeBoorT(t));
 
-    bool success = bspline_optimizer_rebound_->BsplineOptimizeTrajRefine(ctrl_pts, ts, optimal_control_points);
+    bool success = bspline_optimizer_rebound_->BsplineOptimizeTrajRefine(ctrl_pts, ts, optimal_control_points,  Optdata_client);
 
     return success;
   }

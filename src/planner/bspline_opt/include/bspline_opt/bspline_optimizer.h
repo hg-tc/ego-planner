@@ -80,7 +80,7 @@ namespace ego_planner
 
     std::vector<std::vector<Eigen::Vector3d>> initControlPoints(Eigen::MatrixXd &init_points, bool flag_first_init = true);
     bool BsplineOptimizeTrajRebound(Eigen::MatrixXd &optimal_points, double ts, ros::ServiceClient *Optdata_client); // must be called after initControlPoints()
-    bool BsplineOptimizeTrajRefine(const Eigen::MatrixXd &init_points, const double ts, Eigen::MatrixXd &optimal_points);
+    bool BsplineOptimizeTrajRefine(const Eigen::MatrixXd &init_points, const double ts, Eigen::MatrixXd &optimal_points, ros::ServiceClient *Optdata_client);
 
     inline int getOrder(void) { return order_; }
 
@@ -147,7 +147,7 @@ namespace ego_planner
     static double costFunctionRefine(void *func_data, const double *x, double *grad, const int n);
 
     bool rebound_optimize(ros::ServiceClient *Optdata_client);
-    bool refine_optimize();
+    bool refine_optimize(ros::ServiceClient *Optdata_client);
     void combineCostRebound(const double *x, double *grad, double &f_combine, const int n);
     void combineCostRefine(const double *x, double *grad, double &f_combine, const int n);
 
