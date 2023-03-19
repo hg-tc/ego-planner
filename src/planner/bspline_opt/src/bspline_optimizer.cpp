@@ -1,6 +1,7 @@
 #include "bspline_opt/bspline_optimizer.h"
 #include "bspline_opt/gradient_descent_optimizer.h"
 #include <lbfgs/Optdata.h>
+#include <unistd.h>
 // using namespace std;
 
 namespace ego_planner
@@ -918,15 +919,18 @@ namespace ego_planner
         pt.y = cps_.points(1, i);
         pt.z = cps_.points(2, i);
         Optimizedata.request.points.push_back(pt);
-        for(int j = 0;j<cps_.base_point[i].size();j++)
+        int j= 0;
+        for(j = 0;j<cps_.base_point[i].size();j++)
         {
           geometry_msgs::Point pt2;
           pt2.x = cps_.base_point[i][j](0);
           pt2.y = cps_.base_point[i][j](1);
           pt2.z = cps_.base_point[i][j](2);
-          Optimizedata.request.base_point.push_back(pt2);
+          Optimizedata.request.base_point.push_back(pt2);          
         }
-        for(int j = 0;j<cps_.direction[i].size();j++)
+        Optimizedata.request.weightb.push_back(j);
+
+        for(j = 0;j<cps_.direction[i].size();j++)
         {
           geometry_msgs::Point pt3;
           pt3.x = cps_.direction[i][j](0);
@@ -934,6 +938,7 @@ namespace ego_planner
           pt3.z = cps_.direction[i][j](2);
           Optimizedata.request.direction.push_back(pt3);
         }
+        Optimizedata.request.weightd.push_back(j);
 
       }
       
@@ -942,15 +947,16 @@ namespace ego_planner
       //*******************************************************************
       // if(flag){ROS_INFO("client call success");}
       // else{ROS_INFO("client call fail");}
-      int result = lbfgs::lbfgs_optimize(variable_num_, q, &final_cost, BsplineOptimizer::costFunctionRebound, NULL, BsplineOptimizer::earlyExit, this, &lbfgs_params);
-      
-      // result = Optimizedata.response.result;
-      // for (int i = 0; i < variable_num_; ++i)
-      // {
-      //   q[i] = Optimizedata.response.qes[i];
-      // }
-      // final_cost = Optimizedata.response.final_cost;
-      
+      // int result = lbfgs::lbfgs_optimize(variable_num_, q, &final_cost, BsplineOptimizer::costFunctionRebound, NULL, BsplineOptimizer::earlyExit, this, &lbfgs_params);
+      // ROS_INFO("result %d",result);
+      int result = Optimizedata.response.result;
+      for (int i = 0; i < variable_num_; ++i)
+      {
+        q[i] = Optimizedata.response.qes[i];
+      }
+      final_cost = Optimizedata.response.final_cost;
+      this->setparam(Optimizedata);
+
       t2 = ros::Time::now();
       double time_ms = (t2 - t1).toSec() * 1000;
       double total_time_ms = (t2 - t0).toSec() * 1000;
@@ -1015,7 +1021,7 @@ namespace ego_planner
         // while (ros::ok());
       }
 
-    } while ((flag_occ && restart_nums < MAX_RESART_NUMS_SET) ||
+    }while ((flag_occ && restart_nums < MAX_RESART_NUMS_SET) ||
              (flag_force_return && force_stop_type_ == STOP_FOR_REBOUND && rebound_times <= 20));
 
     return success;
@@ -1044,8 +1050,8 @@ namespace ego_planner
       lbfgs_params.max_iterations = 200;
       lbfgs_params.g_epsilon = 0.001;
 
-      // int result = 1;
-      int result = lbfgs::lbfgs_optimize(variable_num_, q, &final_cost, BsplineOptimizer::costFunctionRefine, NULL, NULL, this, &lbfgs_params);
+      int result = 1;
+      // int result = lbfgs::lbfgs_optimize(variable_num_, q, &final_cost, BsplineOptimizer::costFunctionRefine, NULL, NULL, this, &lbfgs_params);
       if (result == lbfgs::LBFGS_CONVERGENCE ||
           result == lbfgs::LBFGSERR_MAXIMUMITERATION ||
           result == lbfgs::LBFGS_ALREADY_MINIMIZED ||

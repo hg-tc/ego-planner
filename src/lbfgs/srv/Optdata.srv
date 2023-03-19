@@ -1,6 +1,6 @@
 int32 variable_num_
 float64[] qes
-int64 final_cost
+float64 final_cost
 int32 fo 
 int32 ord 
 int32 in
@@ -16,11 +16,13 @@ int32 size
 geometry_msgs/Point[] points
 geometry_msgs/Point[] base_point
 geometry_msgs/Point[] direction
+int32[] weightb
+int32[] weightd
 ---
 int32 result
 int32 variable_num_
 float64[] qes
-int64 final_cost
+float64 final_cost
 int32 fo 
 int32 ord 
 int32 in
@@ -34,3 +36,5 @@ float64 ma
 geometry_msgs/Point[] points
 geometry_msgs/Point[] base_point
 geometry_msgs/Point[] direction
+int32[] weightb
+int32[] weightd

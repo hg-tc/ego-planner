@@ -11,16 +11,13 @@ bool Process_callback(lbfgs::Optdata::Request &request,
     ego_planner::MyOptimizer myoptimizer;
     cout << typeid(request.interval).name() << endl;
     ROS_INFO("Process_callback is working");
-    ROS_INFO("before variable_num_ %d", request.variable_num_);
     int variable_num_ = request.variable_num_;
-    ROS_INFO("after variable_num_");
     double q[variable_num_];
-    ROS_INFO("0");
     for (int i = 0; i < variable_num_; ++i)
         {
         q[i] = request.qes[i];
         }
-    ROS_INFO("1");
+
     double final_cost = request.final_cost;
     // data transform
     Eigen::MatrixXd points(3, request.points.size());
@@ -30,41 +27,52 @@ bool Process_callback(lbfgs::Optdata::Request &request,
       points(1, i) = request.points[i].y;
       points(2, i) = request.points[i].z;
     }
-    ROS_INFO("2");
     ego_planner::ControlPoints cps;
     cps.clearance = request.clearance;
     cps.resize(request.size);
     cps.points = points;
-    ROS_INFO("3");
-    for (int i = 0; i<request.base_point.size(); ++i)
+    int count = 0;
+    for (int i = 0; i<request.size; ++i)
     {
-      Eigen::Vector3d base_point;
-      base_point[0] = request.base_point[i].x;
-      base_point[1] = request.base_point[i].y;
-      base_point[2] = request.base_point[i].z;
-      cps.base_point[i].push_back(base_point);
+      for (int j = 0;j<request.weightb[i];++j)
+      {
+
+        Eigen::Vector3d base_point;
+
+        base_point[0] = request.base_point[count].x;
+        base_point[1] = request.base_point[count].y;
+        base_point[2] = request.base_point[count].z;
+
+        cps.base_point[i].push_back(base_point);
+        count++;
+
+      }
     }
-    ROS_INFO("4");
+    count = 0;
+
     
-    for (int i = 0; i<request.direction.size(); ++i)
+    for (int i = 0; i<request.size; ++i)
     {
-      Eigen::Vector3d direction;
-      direction[0] = request.direction[i].x;
-      direction[1] = request.direction[i].y;
-      direction[2] = request.direction[i].z;
-      cps.direction[i].push_back(direction);
+      for (int j = 0;j<request.weightd[i];++j)
+      {
+        Eigen::Vector3d direction;
+        direction[0] = request.direction[count].x;
+        direction[1] = request.direction[count].y;
+        direction[2] = request.direction[count].z;
+        cps.direction[i].push_back(direction);
+        count++;
+      }
     }
+    count = 0;
     int fo = request.fo;
 
     // set my optimizer
-    ROS_INFO("before use myoptimizer");
-    myoptimizer.setparam(fo,request.interval,request.ord,request.l1,request.l2,request.nl2,request.l3, request.mv, request.ma, request.in, cps);
-    ROS_INFO("after use myoptimizer");
-    ROS_INFO("wait for processing");
-    int result = myoptimizer.Processing(variable_num_, q, &final_cost);
-    ROS_INFO("wait for sendback");
 
-    // settings for sendback
+    myoptimizer.setparam(fo,request.interval,request.ord,request.l1,request.l2,request.nl2,request.l3, request.mv, request.ma, request.in, cps);
+    int result = myoptimizer.Processing(variable_num_, q, &final_cost);
+
+
+    // ***********************settings for sendback**************************
     response.variable_num_ = variable_num_;
     response.qes.reserve(variable_num_);
     for (int i = 0; i < variable_num_; ++i)
@@ -73,8 +81,8 @@ bool Process_callback(lbfgs::Optdata::Request &request,
     }
 
     response.final_cost = final_cost;
+    
     myoptimizer.setpubparams(response);
-      // response_pub_->publish(response);
     response.result = result; 
     return true;
 }

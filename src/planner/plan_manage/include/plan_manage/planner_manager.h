@@ -63,12 +63,7 @@ namespace ego_planner
 
   public:
     typedef unique_ptr<EGOPlannerManager> Ptr;
-    void setparam(int fo, double interval, int ord, 
-      double l1, double l2, double nl2, double l3,
-      double mv, double ma, int in, ControlPoints cps)
-      {
-        bspline_optimizer_rebound_->setparam(fo,interval,ord,l1,l2,nl2,l3, mv, ma, in, cps);
-      }
+    
     // !SECTION
   };
 } // namespace ego_planner

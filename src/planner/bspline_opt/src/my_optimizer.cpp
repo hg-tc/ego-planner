@@ -14,10 +14,10 @@ int MyOptimizer::Processing(int variable_num_, double *q, double *final_cost)
   lbfgs_params.max_iterations = 200;
   lbfgs_params.g_epsilon = 0.01;
 //   lbfgs_params = 
-  ROS_INFO("%d,%f", variable_num_, final_cost);
-  for(int i = 0; i< variable_num_; i++){
-    ROS_INFO("q[%d] = %f", i, q[i]);
-  }
+  // ROS_INFO("%d,%f", variable_num_, final_cost);
+  // for(int i = 0; i< variable_num_; i++){
+  //   ROS_INFO("q[%d] = %f", i, q[i]);
+  // }
   int result = lbfgs::lbfgs_optimize(variable_num_, q, final_cost, MyOptimizer::costFunctionRebound, NULL, MyOptimizer::earlyExit, this, &lbfgs_params);
   
   return result;

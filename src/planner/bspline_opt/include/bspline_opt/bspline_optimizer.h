@@ -168,17 +168,58 @@ namespace ego_planner
       msg.request.clearance = cps_.clearance;
       msg.request.size = cps_.size;
     }
-    void setparam(int f, double interval, int ord, 
-      double l1, double l2, double nl2, double l3,
-      double mv, double ma, int in, ControlPoints cps)
+    void setparam(lbfgs::Optdata &msg)
     {
-      if(f == 0) force_stop_type_ = DONT_STOP;
-      else if(f == 1) force_stop_type_ = STOP_FOR_REBOUND;
+      if(msg.response.fo == 0) force_stop_type_ = DONT_STOP;
+      else if(msg.response.fo == 1) force_stop_type_ = STOP_FOR_REBOUND;
       else force_stop_type_ = STOP_FOR_ERROR;
-      bspline_interval_ = interval;
-      order_ = ord;
-      lambda1_ = l1;lambda2_ = l2;new_lambda2_ = nl2;lambda3_ = l3;
-      max_vel_ = mv;max_acc_ = ma;iter_num_ = in; cps_ = cps;
+      bspline_interval_ = msg.response.interval;
+      order_ = msg.response.ord;
+      lambda1_ = msg.response.l1;lambda2_ = msg.response.l2;new_lambda2_ = msg.response.nl2;lambda3_ = msg.response.l3;
+      max_vel_ = msg.response.mv;max_acc_ = msg.response.ma;iter_num_ = msg.response.in;
+      
+      ego_planner::ControlPoints cps;
+      cps.clearance = cps_.clearance;
+      cps.resize(cps_.size);
+      Eigen::MatrixXd points(3, msg.response.points.size());
+      for (size_t i = 0; i < msg.response.points.size(); ++i)
+      {
+        points(0, i) = msg.response.points[i].x;
+        points(1, i) = msg.response.points[i].y;
+        points(2, i) = msg.response.points[i].z;
+      }
+      cps.points = points;
+      int count = 0;
+      for (int i = 0; i<cps_.size; ++i)
+      {
+        for (int j = 0;j<msg.response.weightb[i];++j)
+        {
+
+          Eigen::Vector3d base_point;
+
+          base_point[0] = msg.response.base_point[count].x;
+          base_point[1] = msg.response.base_point[count].y;
+          base_point[2] = msg.response.base_point[count].z;
+
+          cps.base_point[i].push_back(base_point);
+          count++;
+        }
+      }
+      count = 0;
+      for (int i = 0; i<cps_.size; ++i)
+      {
+        for (int j = 0;j<msg.response.weightd[i];++j)
+        {
+          Eigen::Vector3d direction;
+          direction[0] = msg.response.direction[count].x;
+          direction[1] = msg.response.direction[count].y;
+          direction[2] = msg.response.direction[count].z;
+          cps.direction[i].push_back(direction);
+          count++;
+        }
+      }
+      count = 0;
+      cps_ = cps;
     }
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   };

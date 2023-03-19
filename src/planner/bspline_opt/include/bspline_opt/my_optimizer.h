@@ -86,6 +86,35 @@ namespace ego_planner
       msg.ord = order_; msg.in = iter_num_; msg.l1 = lambda1_;
       msg.l2 = lambda2_; msg.nl2 = new_lambda2_; msg.l3 = lambda3_;
       msg.mv = max_vel_; msg.ma = max_acc_;
+      for (int i = 0; i < cps_.size; ++i)
+      {
+        geometry_msgs::Point pt;
+        pt.x = cps_.points(0, i);
+        pt.y = cps_.points(1, i);
+        pt.z = cps_.points(2, i);
+        msg.points.push_back(pt);
+        int j= 0;
+        for(j = 0;j<cps_.base_point[i].size();j++)
+        {
+          geometry_msgs::Point pt2;
+          pt2.x = cps_.base_point[i][j](0);
+          pt2.y = cps_.base_point[i][j](1);
+          pt2.z = cps_.base_point[i][j](2);
+          msg.base_point.push_back(pt2);          
+        }
+        msg.weightb.push_back(j);
+
+        for(j = 0;j<cps_.direction[i].size();j++)
+        {
+          geometry_msgs::Point pt3;
+          pt3.x = cps_.direction[i][j](0);
+          pt3.y = cps_.direction[i][j](1);
+          pt3.z = cps_.direction[i][j](2);
+          msg.direction.push_back(pt3);
+        }
+        msg.weightd.push_back(j);
+      }
+
     }
   };
   
